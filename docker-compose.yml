@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  pool_leak_test:
+    build:
+      context: .
+    deploy:
+      resources:
+        limits:
+          cpus: 0.8
+          memory: 85M
+        reservations:
+          memory: 85M
+    volumes: 
+      - .:/app
+    entrypoint: "/app/entrypoint.sh"
+  
