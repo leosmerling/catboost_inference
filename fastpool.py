@@ -511,6 +511,9 @@ class Pool(catboost.Pool):
     ):
         pass
 
+    def drop(self):
+        super(catboost.Pool, self).__dealloc__()
+
 
 class CatBoost(catboost.CatBoost):
 
