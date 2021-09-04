@@ -77,8 +77,8 @@ def main(batch_size=15, n_iterations=100, print_every=10, cleanup_every=None):
             mem, snapshot = memory_footprint(i, snapshot)
             maxmem = max(mem, maxmem)
             elapsed = time.time() - clock
-            print("iter {} y={} clock={:.3f} lat/item: {:.6f} mem: {:.2f}MB max: {:.2f}MB".format(
-                i, y[0], elapsed, 1000. * elapsed / batch_size / print_every, mem, maxmem
+            print("iter {} y={} elapsed={:.3f}s ms/call: {:.6f} ms/item: {:.6f} mem: {:.2f}MB max: {:.2f}MB".format(
+                i, y[0], elapsed, 1000. * elapsed / print_every, 1000. * elapsed / batch_size / print_every, mem, maxmem
             ))
             clock = time.time()
             del pool
@@ -86,5 +86,5 @@ def main(batch_size=15, n_iterations=100, print_every=10, cleanup_every=None):
 # %%
 
 if __name__ == "__main__":
-    main(batch_size=15, n_iterations=1000000, print_every=1000)
+    main(batch_size=150000, n_iterations=1000, print_every=1)
 # %%
