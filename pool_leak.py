@@ -9,6 +9,7 @@ import catboost as cb
 # import fastpool as fp  # replacement for catboost python wrapper
 import numpy as np
 import psutil
+import ctypes
 
 import tracemalloc
 
@@ -39,12 +40,12 @@ def main(batch_size=15, n_iterations=100, print_every=10, cleanup_every=None):
     model = cb.CatBoost()
     model.load_model(fname="model.cbm")
     
-    data = np.asarray([x for x in X(batch_size)], dtype=object)
+    # data = np.asarray([x for x in X(batch_size)], dtype=object)
     snapshot = None
 
     # tracemalloc.start(10)
     for i in range(n_iterations):
-        pool = cb.Pool(data, cat_features=[0, 1, 2], thread_count=1)
+        pool = cb.Pool([x for x in X(batch_size)], cat_features=[0, 1, 2], thread_count=1)
         y = model.predict(pool, thread_count=1)
 
         if i % print_every == 0:
@@ -55,7 +56,15 @@ def main(batch_size=15, n_iterations=100, print_every=10, cleanup_every=None):
                 i, y[0], elapsed, 1000. * elapsed / print_every, 1000. * elapsed / batch_size / print_every, mem, maxmem
             ))
             clock = time.time()
-        del pool
+
+        # print(pool)
+        # ref = ctypes.py_object(pool)
+        # ctypes.resize(ref, 8)
+        # del ref
+        # del pool
+        # ctypes.pythonapi._Py_Dealloc(ref)
+
+        # del pool
 
 # %%
 
