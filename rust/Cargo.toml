@@ -5,3 +5,5 @@ edition = "2018"
 
 [dependencies]
 catboost = { git = "https://github.com/catboost/catboost" }
+simple-process-stats = "1.0.0"
+tokio = { version = "1.11.0", features = ["full"] }
