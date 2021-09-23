@@ -41,9 +41,8 @@ def main(batch_size=15, n_iterations=100, print_every=10, cleanup_every=None):
     for i in range(n_iterations + 1):
         data = [x for x in X(batch_size)]
 
-        # Creating a Pool in python to call predict
-        pool = cb.Pool(data, cat_features=[0, 1, 2], thread_count=1)
-        y = model.predict(pool, thread_count=1)
+        # Predict directly without creating a Pool
+        y = model.predict(data, thread_count=1)
 
         if i and i % print_every == 0:
             mem, snapshot = memory_footprint(i, snapshot)
