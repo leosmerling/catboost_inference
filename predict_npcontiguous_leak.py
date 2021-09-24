@@ -1,4 +1,5 @@
 #%%
+from ctypes import alignment
 import gc
 import os
 import sys
@@ -32,27 +33,44 @@ def main(batch_size=15, n_iterations=100, print_every=10, cleanup_every=None):
     print("numpy version=", np.__version__)
     print("catboost version=", cb.__version__)
 
+    print("""
+        Using
+        ```
+        y = model.predict(
+            np.ascontiguousarray([x for x in X(batch_size)], dtype=object),
+            thread_count=1
+        )
+        ```
+    """)
+    print()
+
+    print("Loading model.cbm...")
+    model = cb.CatBoost()
+    model.load_model(fname="model.cbm")
+    
     snapshot = None
 
+    print("Starting {} iterations of batch_size: {}".format(n_iterations, batch_size))
     # tracemalloc.start(10)
     for i in range(n_iterations + 1):
-        data = [x for x in X(batch_size)]
 
-        # Creating a Pool in python, no call to model.predict
-        pool = cb.Pool(data, cat_features=[0, 1, 2], thread_count=1)
+        # Predict directly without creating a Pool
+        y = model.predict(
+            np.ascontiguousarray([x for x in X(batch_size)], dtype=object),
+            thread_count=1
+        )
 
         if i and i % print_every == 0:
             mem, snapshot = memory_footprint(i, snapshot)
             maxmem = max(mem, maxmem)
             elapsed = time.time() - clock
             print("iter {} y={} elapsed={:.3f}s ms/call: {:.6f} ms/item: {:.6f} mem: {:.3f}Mb max: {:.3f}Mb".format(
-                i, "poolonly test", elapsed, 1000. * elapsed / print_every, 1000. * elapsed / batch_size / print_every, mem, maxmem
+                i, y[0], elapsed, 1000. * elapsed / print_every, 1000. * elapsed / batch_size / print_every, mem, maxmem
             ))
             sys.stdout.flush()
             clock = time.time()
-
 # %%
 
 if __name__ == "__main__":
-    main(batch_size=150, n_iterations=3000000, print_every=1000)
+    main(batch_size=150, n_iterations=3000000, print_every=10000)
 # %%

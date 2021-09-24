@@ -57,5 +57,5 @@ def main(batch_size=15, n_iterations=100, print_every=10, cleanup_every=None):
 # %%
 
 if __name__ == "__main__":
-    main(batch_size=150, n_iterations=1500000, print_every=1000)
+    main(batch_size=150, n_iterations=3000000, print_every=1000)
 # %%

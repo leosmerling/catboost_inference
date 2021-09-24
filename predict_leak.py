@@ -1,4 +1,5 @@
 #%%
+from ctypes import alignment
 import gc
 import os
 import sys
@@ -13,7 +14,7 @@ maxmem = 0.0
 
 def memory_footprint(it: int, prev_snapshot=None):
     """Returns memory (in MB) being used by Python process"""
-    gc.collect()
+    # gc.collect()
     mem = psutil.Process(os.getpid()).memory_info().rss
     return mem / 1024 ** 2, None  # snapshot
 
@@ -39,10 +40,8 @@ def main(batch_size=15, n_iterations=100, print_every=10, cleanup_every=None):
 
     # tracemalloc.start(10)
     for i in range(n_iterations + 1):
-        data = [x for x in X(batch_size)]
-
         # Predict directly without creating a Pool
-        y = model.predict(data, thread_count=1)
+        y = model.predict([x for x in X(batch_size)], thread_count=1)
 
         if i and i % print_every == 0:
             mem, snapshot = memory_footprint(i, snapshot)
@@ -56,5 +55,5 @@ def main(batch_size=15, n_iterations=100, print_every=10, cleanup_every=None):
 # %%
 
 if __name__ == "__main__":
-    main(batch_size=150, n_iterations=1500000, print_every=1000)
+    main(batch_size=150, n_iterations=3000000, print_every=1000)
 # %%
