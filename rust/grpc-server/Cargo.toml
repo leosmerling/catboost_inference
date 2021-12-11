@@ -18,6 +18,7 @@ tonic = "0.6"
 prost = "0.9"
 tokio = { version = "1.14", features = ["macros", "rt-multi-thread"] }
 catboost = { git = "https://github.com/catboost/catboost" }
+log = "*"
 
 [build-dependencies]
 tonic-build = "0.6"

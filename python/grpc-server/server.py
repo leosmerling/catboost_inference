@@ -19,7 +19,7 @@ class CatboostInferenceService(InferenceServicer):
 
 
 def serve():
-    server = grpc.server(ThreadPoolExecutor(max_workers=2))
+    server = grpc.server(ThreadPoolExecutor(max_workers=10))
     add_InferenceServicer_to_server(CatboostInferenceService(), server)
     server.add_insecure_port("0.0.0.0:50052")
     server.start()

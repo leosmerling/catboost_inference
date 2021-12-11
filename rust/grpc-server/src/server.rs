@@ -1,7 +1,4 @@
-use std::thread_local;
-
 use tonic::{transport::Server, Request, Response, Status};
-use catboost;
 
 pub mod cb {
     tonic::include_proto!("cb"); // The string specified here must match the proto package name
@@ -33,10 +30,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let addr = "[::1]:50051".parse()?;
     let service = CatboostInferenceService::default();
 
-    Server::builder()
+    let server = Server::builder()
         .add_service(cb::inference_server::InferenceServer::new(service))
         .serve(addr)
         .await?;
+
+    println!("SERVER: {:?}", server);
 
     Ok(())
 }

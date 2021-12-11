@@ -1,4 +1,5 @@
 use std::time::Instant;
+use std::thread;
 
 use crate::cb::{PredictRequest, PredictResponse, Features, Prediction};
 
@@ -7,7 +8,7 @@ thread_local! {
 }
 
 fn load_model() -> catboost::Model {
-    println!("Loading model...");
+    println!("THREAD:{:?} Loading model...", thread::current().id());
     catboost::Model::load("model.cbm").unwrap()
 }
 
