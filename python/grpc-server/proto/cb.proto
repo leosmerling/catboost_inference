@@ -1,0 +1,18 @@
+syntax = "proto3";
+package cb;
+
+service Inference {
+    rpc Predict(PredictRequest) returns (PredictResponse);
+}
+
+message PredictRequest {
+    string cat_feature1 = 1;
+    string cat_feature2 = 2;
+    string cat_feature3 = 3;
+    float float_feature4 = 4;
+    float float_feature5 = 5;
+}
+
+message PredictResponse {
+    float score = 1;
+}
