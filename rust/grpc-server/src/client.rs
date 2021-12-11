@@ -24,6 +24,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut client = cb::inference_client::InferenceClient::connect(host).await?;
     
+    let mut report_start = Instant::now();
+    let mut total_secs = 0.0f32;
     let mut lat = vec![0u128; n];
     let mut model_lat = vec![0u128; n];
     let mut prep_lat = vec![0u128; n];
@@ -44,22 +46,25 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         prep_lat[i] = response.preprocess_latency as u128;
 
         if i % REPORT == 0 {
-            log_stats(">Prepr", i, n, timeout, &prep_lat, i - REPORT, REPORT);
-            log_stats(">Model", i, n, timeout, &model_lat, i - REPORT, REPORT);
-            log_stats("Client", i, n, timeout, &lat, i - REPORT, REPORT);
+            let secs = report_start.elapsed().as_secs_f32();
+            log_stats(">Prepr", i, n, secs, timeout, &prep_lat, i - REPORT, REPORT);
+            log_stats(">Model", i, n, secs, timeout, &model_lat, i - REPORT, REPORT);
+            log_stats("Client", i, n, secs, timeout, &lat, i - REPORT, REPORT);
             println!("--------------------------------------------------------------------------------------------------------------------------------------------------------");
+            total_secs += secs;
+            report_start = Instant::now();
         }
     }
 
     println!("REPORT =================================================================================================================================================");
-    log_stats(">Prepr", n, n, timeout, &prep_lat, 0, n);
-    log_stats(">Model", n, n, timeout, &model_lat, 0, n);
-    log_stats("Client", n, n, timeout, &lat, 0, n);
+    log_stats(">Prepr", n, n, total_secs, timeout, &prep_lat, 0, n);
+    log_stats(">Model", n, n, total_secs, timeout, &model_lat, 0, n);
+    log_stats("Client", n, n, total_secs, timeout, &lat, 0, n);
     println!("========================================================================================================================================================");
     Ok(())
 }
 
-fn log_stats(title: &str, i: usize, n: usize, timeout: u64, latencies: &Vec<u128>, skip: usize, take: usize) {
+fn log_stats(title: &str, i: usize, n: usize, secs: f32, timeout: u64, latencies: &Vec<u128>, skip: usize, take: usize) {
     let mean = latencies.iter().skip(skip).take(take).sum::<u128>() / (i - skip) as u128;
     let max = *latencies.iter().skip(skip).take(take).max().unwrap();
     let count = latencies.iter().skip(skip).take(take).collect::<Vec<&u128>>().len();
@@ -75,12 +80,12 @@ fn log_stats(title: &str, i: usize, n: usize, timeout: u64, latencies: &Vec<u128
     ).collect();
 
     println!(
-        "{}: \t{}\tMean={:.3}ms\tMax={:.3}ms\tCount={}\tTimeouts={}\tSucc={:0>3.3}%\t{}",
+        "{}: \t{}\tMean={:.3}ms\tMax={:.3}ms\tReq/s={:.0}\tTimeouts={}\tSucc={:0>3.3}%\t{}",
         title,
         i,
         mean as f64 * 1e-6,
         max as f64 * 1e-6,
-        count,
+        count as f32 / secs,
         timeouts,
         success_ratio,
         ps.join("\t")
