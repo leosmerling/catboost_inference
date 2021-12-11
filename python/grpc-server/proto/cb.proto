@@ -6,6 +6,10 @@ service Inference {
 }
 
 message PredictRequest {
+    repeated Features features = 1;
+}
+
+message Features {
     string cat_feature1 = 1;
     string cat_feature2 = 2;
     string cat_feature3 = 3;
@@ -14,5 +18,11 @@ message PredictRequest {
 }
 
 message PredictResponse {
+    repeated Prediction predictions = 1;
+    uint64 preprocess_latency = 2;
+    uint64 model_latency = 3;
+}
+
+message Prediction {
     float score = 1;
 }

@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x08\x63\x62.proto\x12\x02\x63\x62\"\x82\x01\n\x0ePredictRequest\x12\x14\n\x0c\x63\x61t_feature1\x18\x01 \x01(\t\x12\x14\n\x0c\x63\x61t_feature2\x18\x02 \x01(\t\x12\x14\n\x0c\x63\x61t_feature3\x18\x03 \x01(\t\x12\x16\n\x0e\x66loat_feature4\x18\x04 \x01(\x02\x12\x16\n\x0e\x66loat_feature5\x18\x05 \x01(\x02\" \n\x0fPredictResponse\x12\r\n\x05score\x18\x01 \x01(\x02\x32?\n\tInference\x12\x32\n\x07Predict\x12\x12.cb.PredictRequest\x1a\x13.cb.PredictResponseb\x06proto3'
+  serialized_pb=b'\n\x08\x63\x62.proto\x12\x02\x63\x62\"0\n\x0ePredictRequest\x12\x1e\n\x08\x66\x65\x61tures\x18\x01 \x03(\x0b\x32\x0c.cb.Features\"|\n\x08\x46\x65\x61tures\x12\x14\n\x0c\x63\x61t_feature1\x18\x01 \x01(\t\x12\x14\n\x0c\x63\x61t_feature2\x18\x02 \x01(\t\x12\x14\n\x0c\x63\x61t_feature3\x18\x03 \x01(\t\x12\x16\n\x0e\x66loat_feature4\x18\x04 \x01(\x02\x12\x16\n\x0e\x66loat_feature5\x18\x05 \x01(\x02\"i\n\x0fPredictResponse\x12#\n\x0bpredictions\x18\x01 \x03(\x0b\x32\x0e.cb.Prediction\x12\x1a\n\x12preprocess_latency\x18\x02 \x01(\x04\x12\x15\n\rmodel_latency\x18\x03 \x01(\x04\"\x1b\n\nPrediction\x12\r\n\x05score\x18\x01 \x01(\x02\x32?\n\tInference\x12\x32\n\x07Predict\x12\x12.cb.PredictRequest\x1a\x13.cb.PredictResponseb\x06proto3'
 )
 
 
@@ -34,35 +34,67 @@ _PREDICTREQUEST = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='cat_feature1', full_name='cb.PredictRequest.cat_feature1', index=0,
+      name='features', full_name='cb.PredictRequest.features', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=16,
+  serialized_end=64,
+)
+
+
+_FEATURES = _descriptor.Descriptor(
+  name='Features',
+  full_name='cb.Features',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='cat_feature1', full_name='cb.Features.cat_feature1', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='cat_feature2', full_name='cb.PredictRequest.cat_feature2', index=1,
+      name='cat_feature2', full_name='cb.Features.cat_feature2', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='cat_feature3', full_name='cb.PredictRequest.cat_feature3', index=2,
+      name='cat_feature3', full_name='cb.Features.cat_feature3', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='float_feature4', full_name='cb.PredictRequest.float_feature4', index=3,
+      name='float_feature4', full_name='cb.Features.float_feature4', index=3,
       number=4, type=2, cpp_type=6, label=1,
       has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='float_feature5', full_name='cb.PredictRequest.float_feature5', index=4,
+      name='float_feature5', full_name='cb.Features.float_feature5', index=4,
       number=5, type=2, cpp_type=6, label=1,
       has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
@@ -80,8 +112,8 @@ _PREDICTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=17,
-  serialized_end=147,
+  serialized_start=66,
+  serialized_end=190,
 )
 
 
@@ -94,7 +126,53 @@ _PREDICTRESPONSE = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='score', full_name='cb.PredictResponse.score', index=0,
+      name='predictions', full_name='cb.PredictResponse.predictions', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='preprocess_latency', full_name='cb.PredictResponse.preprocess_latency', index=1,
+      number=2, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='model_latency', full_name='cb.PredictResponse.model_latency', index=2,
+      number=3, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=192,
+  serialized_end=297,
+)
+
+
+_PREDICTION = _descriptor.Descriptor(
+  name='Prediction',
+  full_name='cb.Prediction',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='score', full_name='cb.Prediction.score', index=0,
       number=1, type=2, cpp_type=6, label=1,
       has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
@@ -112,12 +190,16 @@ _PREDICTRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=149,
-  serialized_end=181,
+  serialized_start=299,
+  serialized_end=326,
 )
 
+_PREDICTREQUEST.fields_by_name['features'].message_type = _FEATURES
+_PREDICTRESPONSE.fields_by_name['predictions'].message_type = _PREDICTION
 DESCRIPTOR.message_types_by_name['PredictRequest'] = _PREDICTREQUEST
+DESCRIPTOR.message_types_by_name['Features'] = _FEATURES
 DESCRIPTOR.message_types_by_name['PredictResponse'] = _PREDICTRESPONSE
+DESCRIPTOR.message_types_by_name['Prediction'] = _PREDICTION
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 PredictRequest = _reflection.GeneratedProtocolMessageType('PredictRequest', (_message.Message,), {
@@ -127,12 +209,26 @@ PredictRequest = _reflection.GeneratedProtocolMessageType('PredictRequest', (_me
   })
 _sym_db.RegisterMessage(PredictRequest)
 
+Features = _reflection.GeneratedProtocolMessageType('Features', (_message.Message,), {
+  'DESCRIPTOR' : _FEATURES,
+  '__module__' : 'cb_pb2'
+  # @@protoc_insertion_point(class_scope:cb.Features)
+  })
+_sym_db.RegisterMessage(Features)
+
 PredictResponse = _reflection.GeneratedProtocolMessageType('PredictResponse', (_message.Message,), {
   'DESCRIPTOR' : _PREDICTRESPONSE,
   '__module__' : 'cb_pb2'
   # @@protoc_insertion_point(class_scope:cb.PredictResponse)
   })
 _sym_db.RegisterMessage(PredictResponse)
+
+Prediction = _reflection.GeneratedProtocolMessageType('Prediction', (_message.Message,), {
+  'DESCRIPTOR' : _PREDICTION,
+  '__module__' : 'cb_pb2'
+  # @@protoc_insertion_point(class_scope:cb.Prediction)
+  })
+_sym_db.RegisterMessage(Prediction)
 
 
 
@@ -143,8 +239,8 @@ _INFERENCE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=183,
-  serialized_end=246,
+  serialized_start=328,
+  serialized_end=391,
   methods=[
   _descriptor.MethodDescriptor(
     name='Predict',
