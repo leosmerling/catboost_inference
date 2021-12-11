@@ -1,5 +1,8 @@
-# catboost_memleak
+# catboost_inference
 
+Repo to try high-performance inference using catboost.
+
+Archive:
 Example showing issue https://github.com/catboost/catboost/issues/1835
 
 Thes scripts simulates/checks a memory leak in 
