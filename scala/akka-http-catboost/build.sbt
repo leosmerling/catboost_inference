@@ -23,6 +23,7 @@ libraryDependencies ++= {
     "io.circe"          %% "circe-parser" % circeV,
     "io.circe"          %% "circe-generic" % circeV,
     "ch.qos.logback"    % "logback-classic" % "1.2.3",
+    "ai.catboost"       % "catboost-prediction" % "1.0.4",
     "org.scalatest"     %% "scalatest" % scalaTestV % Test,
   ) ++ Seq(
     "com.typesafe.akka" %% "akka-http" % akkaHttpV,
