@@ -2,6 +2,7 @@ use std::time::{Duration, Instant};
 
 use std::sync::mpsc;
 
+use hyper::StatusCode;
 use prost::Message;
 
 use tokio;
@@ -75,12 +76,21 @@ impl User {
                 .send()
                 .await?;
 
-            let response = cb::PredictResponse::decode(response_raw.text().await?.as_bytes())?;
-
-
-            lat[i] = start.elapsed().as_nanos() as u64;
-            model_lat[i] = response.model_latency / 100_000_000;
-            prep_lat[i] = response.preprocess_latency;
+            let data = response_raw.bytes().await?; // text().await?;
+            let response = match cb::PredictResponse::decode(data.slice(..)) {
+                Ok(response) => {
+                    lat[i] = start.elapsed().as_nanos() as u64;
+                    model_lat[i] = response.model_latency;
+                    prep_lat[i] = response.preprocess_latency;
+                    response
+                },
+                err@_ => {
+                    println!("****** ERROR {:?} {:?}", err, data);
+                    lat[i] = start.elapsed().as_nanos() as u64;
+                    model_lat[i] = lat[i];
+                    cb::PredictResponse::default()
+                }
+            };
 
             if i % REPORT == 0 {
                 // println!("request {:?}", &request);

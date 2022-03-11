@@ -5,15 +5,23 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[[bin]] # Bin to run the HelloWorld gRPC client
+[[bin]] # Bin to run the http server
+name = "cb-server"
+path = "src/server.rs"
+
+[[bin]] # Bin to run client benchmark
 name = "cb-client"
 path = "src/client.rs"
 
 [dependencies]
-reqwest = { version = "0.11", features = ["json"] }
+hyper = { version = "0.14", features = ["full"] }
 tokio = { version = "1", features = ["full"] }
 bytes = "1.1.0"
 prost = "0.9"
+warp = "0.3"
+reqwest = "0.11"
+catboost = { git = "https://github.com/catboost/catboost" }
+log = "*"
 
 [build-dependencies]
 prost-build = "0.9"
