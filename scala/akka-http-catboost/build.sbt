@@ -34,7 +34,13 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpV % Test,
     "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpV % Test,
     "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaV % Test,
+    "fr.davit" %% "akka-http-scalapb-binary" % "0.2.5", // binary & json support
+    // "com.thesamet.scalapb" %% "scalapb-runtime" % scalapb.compiler.Version.scalapbVersion % "protobuf",
   ).map(_.cross(CrossVersion.for3Use2_13))
 }
 
 Revolver.settings
+
+Compile / PB.targets := Seq(
+  scalapb.gen() -> (Compile / sourceManaged).value / "scalapb"
+)

@@ -1,0 +1,19 @@
+[package]
+name = "http-server"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]] # Bin to run the HelloWorld gRPC client
+name = "cb-client"
+path = "src/client.rs"
+
+[dependencies]
+reqwest = { version = "0.11", features = ["json"] }
+tokio = { version = "1", features = ["full"] }
+bytes = "1.1.0"
+prost = "0.9"
+
+[build-dependencies]
+prost-build = "0.9"
