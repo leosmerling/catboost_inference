@@ -2,10 +2,13 @@ use std::time::{Duration, Instant};
 
 use std::sync::mpsc;
 
+use hyper::StatusCode;
+use prost::Message;
+
 use tokio;
 
 pub mod cb {
-    tonic::include_proto!("cb"); // The string specified here must match the proto package name
+    include!(concat!(env!("OUT_DIR"), "/cb.rs"));
 }
 
 const REPORT: usize = 10000;
@@ -37,16 +40,13 @@ impl User {
     }
 
     async fn execute(&mut self, params: &Params) -> Result<Metrics, Box<dyn std::error::Error>> {
-        let mut client = cb::inference_client::InferenceClient::connect(params.host.clone()).await?;
+        let client = reqwest::Client::new();
 
         //Warm up connection
-        client.predict(cb::PredictRequest { features: vec![cb::Features {
-            cat_feature1: "A".to_string(),
-            cat_feature2: "B".to_string(),
-            cat_feature3: "C".to_string(),
-            float_feature4: 0.5,
-            float_feature5: 0.33,
-        }; params.b] }).await?;
+        client.get(&params.host).send().await?;
+
+        let url = format!("{}/get-prediction", &params.host);
+        //let mut client = cb::inference_client::InferenceClient::connect(params.host.clone()).await?;
 
         let mut report_start = Instant::now();
         let mut total_secs = 0.0f32;
@@ -64,17 +64,40 @@ impl User {
                 }; params.b] 
             };
             let start = Instant::now();
-            let response = client.predict(request).await?.into_inner();
-            lat[i] = start.elapsed().as_nanos() as u64;
-            model_lat[i] = response.model_latency;
-            prep_lat[i] = response.preprocess_latency;
+            //let response = client.predict(request).await?.into_inner();
+
+            let mut buf = Vec::new();
+            buf.reserve(request.encoded_len());
+            request.encode(&mut buf).unwrap();
+
+            let response_raw = client.post(&url)
+                .header("content-type", "application/x-protobuf")
+                .body(buf)
+                .send()
+                .await?;
+
+            let data = response_raw.bytes().await?; // text().await?;
+            let response = match cb::PredictResponse::decode(data.slice(..)) {
+                Ok(response) => {
+                    lat[i] = start.elapsed().as_nanos() as u64;
+                    model_lat[i] = response.model_latency;
+                    prep_lat[i] = response.preprocess_latency;
+                    response
+                },
+                err@_ => {
+                    println!("****** ERROR {:?} {:?}", err, data);
+                    lat[i] = start.elapsed().as_nanos() as u64;
+                    model_lat[i] = lat[i];
+                    cb::PredictResponse::default()
+                }
+            };
 
             if i % REPORT == 0 {
-                let secs = report_start.elapsed().as_secs_f32();
                 // println!("request {:?}", &request);
                 println!("response {:?}", response);
                 println!("--------------------------------------------------------------------------------------------------------------------------------------------------------");
-                 log_stats(">Prepr", i, params.n, secs, params.timeout, &prep_lat, i - REPORT, REPORT);
+                let secs = report_start.elapsed().as_secs_f32();
+                log_stats(">Prepr", i, params.n, secs, params.timeout, &prep_lat, i - REPORT, REPORT);
                 log_stats(">Model", i, params.n, secs, params.timeout, &model_lat, i - REPORT, REPORT);
                 log_stats(&self.id, i, params.n, secs, params.timeout, &lat, i - REPORT, REPORT);
                 println!("--------------------------------------------------------------------------------------------------------------------------------------------------------");

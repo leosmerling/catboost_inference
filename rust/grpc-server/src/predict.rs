@@ -26,9 +26,9 @@ pub fn preprocess(features: &Vec<Features>) -> (Vec<Vec<String>>, Vec<Vec<f32>>)
 
 pub fn predict(request: PredictRequest) -> PredictResponse {
     
-    let start = Instant::now();
+    //let start = Instant::now();
     let (cat_features, float_features ) = preprocess(&request.features);
-    let preprocess_latency = start.elapsed().as_nanos() as u64;
+    //let preprocess_latency = start.elapsed().as_nanos() as u64;
 
     let start = Instant::now();
     let pred = MODEL.with( |model| 
@@ -38,7 +38,7 @@ pub fn predict(request: PredictRequest) -> PredictResponse {
     
     PredictResponse {
         predictions: pred.iter().map(|score| Prediction { score:  *score as f32 }).collect(),
-        preprocess_latency,
+        preprocess_latency: 0,
         model_latency,
     }
 }
